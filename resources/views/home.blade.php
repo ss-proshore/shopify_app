@@ -2,7 +2,7 @@
 @section('content')
     <p>You are: {{ Auth::user()->name }} from home page</p>
 
-    <p><a href="{{ URL::tokenRoute('billing', ['plan' => $upgrade_plan[0]]) }}">Update Plan</a></p>
+    <p><a href="{{ URL::tokenRoute('billing', ['plan' => $update_plan ]) }}">Update Plan</a></p>
 @endsection
 @section('scripts')
     @parent
