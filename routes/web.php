@@ -2,18 +2,17 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\HomeController;
+
+Route::get('/', HomeController::class)->middleware(['verify.shopify'])->name('home');
 
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware(['verify.shopify'])->name('home');
+Route::get('product', [ProductController::class, 'index'])
+        ->name('product.index')
+        ->middleware(['verify.shopify']);
 
-
-//This will redirect user to login page.
-Route::get('/login', function () {
-
-    if (Auth::user()) {
-        return redirect()->route('home');
-    }
-    return view('login');
-})->name('login');
+Route::get('test', function () {
+    $request = request()->all();
+    dd($request, Auth::user());
+})->middleware(['verify.shopify'])->name('test');
