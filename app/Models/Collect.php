@@ -9,6 +9,8 @@ class Collect extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'collect_id';
+
     protected $fillable = [
         'collect_id',
         'collection_id',
@@ -23,4 +25,14 @@ class Collect extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
+    }
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class, 'collection_id', 'collection_id');
+    }
 }

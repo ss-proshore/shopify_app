@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\Collect;
+use App\Models\Collection;
 use App\Models\Product;
 use App\Services\ApiService;
 use Illuminate\Bus\Queueable;
@@ -57,5 +59,40 @@ class SyncProducts implements ShouldQueue
             );
         }
         Log::info("All product updated");
+
+        $response = ApiService::get('collects.json', $this->user)['collects'];
+
+        foreach($response as $collect) {
+
+            $collect = Collect::updateOrCreate(
+                ['collect_id' => $collect['id']],
+                [
+                    'collection_id' => $collect['collection_id'],
+                    'product_id' => $collect['product_id'],
+                    'position' => $collect['position'],
+                    'sort_value' => $collect['sort_value'],
+                    'created_at' => $collect['created_at'],
+                    'updated_at' => $collect['updated_at'],
+                ]
+            );
+
+            $collection = ApiService::get('collections/' . $collect->collection_id. '.json', $this->user)['collection'];
+            Collection::updateOrCreate(
+                ['collection_id' => $collection['id']],
+                [
+                    'handle' => $collection['handle'],
+                    'title' => $collection['title'],
+                    'updated_at' => $collection['updated_at'],
+                    'published_at' => $collection['published_at'],
+                    'body_html' => $collection['body_html'],
+                    'sort_order' => $collection['sort_order'],
+                    'template_suffix' => $collection['template_suffix'],
+                    'products_count' => $collection['products_count'],
+                    'collection_type' => $collection['collection_type'],
+                    'published_scope' => $collection['published_scope'],
+                    'admin_graphql_api_id' => $collection['admin_graphql_api_id'],
+                ]
+            );
+        }
     }
 }
