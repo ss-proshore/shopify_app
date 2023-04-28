@@ -16,6 +16,6 @@ class ApiService
 
     public static function post(string $endpoint, User $shop, array $data = [])
     {
-       return $shop->api()->rest('POST', $endpoint, $data);
+       return $shop->api()->rest('POST', self::API_PREFIX . $endpoint, $data);
     }
 }
