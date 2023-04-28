@@ -18,6 +18,7 @@ class HomeController extends Controller
     public function __invoke()
     {
         $user = Auth::user();
+
         if(!$user->plan_id) {
             $plans = Plan::select('id','name', 'price', 'interval', 'trial_days')->get();
             return view('welcome', compact('plans'));
@@ -25,11 +26,13 @@ class HomeController extends Controller
 
         $update_plan = Plan::where('id', '!=', Auth::user()->plan_id)->first()->id;
 
-        // SyncProducts::dispatch(Auth::user());
+        //sync data from shopify store
+        if(Product::count() < 0) {
+            SyncProducts::dispatch(Auth::user());
+        }
 
-        $product = Product::whereHas('collections')->with('collections')->get()->toArray();
-        dd($product);
+        $products = Product::with('collections:collection_id,title')->get();
 
-        return view('home', compact('update_plan'));
+        return view('home', compact('update_plan', 'products'));
     }
 }

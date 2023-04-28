@@ -12,7 +12,6 @@ class Collection extends Model
     public $timestamps = FALSE;
     protected $primaryKey = 'collection_id';
 
-
     protected $fillable =[
         'collection_id',
         'handle',
